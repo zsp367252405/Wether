@@ -5,7 +5,7 @@ import os
 DOUBAO_API_KEY = os.getenv("DOUBAO_API_KEY")
 DOUBAO_URL = "https://ark.cn-beijing.volces.com/api/v3/chat/completions"
 FEISHU_WEBHOOK = os.getenv("FEISHU_WEBHOOK")
-MODEL = "doubao-seed-2-0-pro-260215"
+MODEL = "doubao-seed-2-0-pro-260215"  # 确认模型ID是否正确
 
 def get_weather():
     prompt = """
@@ -38,7 +38,13 @@ def get_weather():
         "temperature": 0.2
     }
     resp = requests.post(DOUBAO_URL, json=data, timeout=30)
-    return resp.json()["choices"][0]["message"]["content"]
+    resp_json = resp.json()
+    print("API 完整响应:", resp_json)  # 打印完整响应，方便排查
+    
+    if "choices" in resp_json:
+        return resp_json["choices"][0]["message"]["content"]
+    else:
+        return f"API 请求失败: {resp_json.get('error', '未知错误')}"
 
 def send_feishu(content):
     msg = {
