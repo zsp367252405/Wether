@@ -1,0 +1,26 @@
+name: 厦门同安天气推送 7:00
+
+on:
+  schedule:
+    - cron: "0 23 * * *"   # 北京时间 7:00
+  workflow_dispatch:       # 手动测试
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: pip install requests
+
+      - name: Run weather bot
+        env:
+          DOUBAO_API_KEY: ${{ secrets.DOUBAO_API_KEY }}
+          FEISHU_WEBHOOK: ${{ secrets.FEISHU_WEBHOOK }}
+        run: python weather.py
